@@ -1,12 +1,21 @@
+#include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <execution>
 #include <fstream>
 #include <iostream>
+#include <thread>
+#include <vector>
+
+#define MAX_GENERATED_STRING_LENGTH 8
 
 // Toggles whether generated strings are printed as they are generated. It looks
 // cool and lets you see the progress, but slows down the process a lot.
 #define PRINT_GENERATED_STRINGS 0
-#define MAX_GENERATED_STRING_LENGTH 8
+
+// This is the minimum length for generating strings where we start computing
+// across separate threads instead of in parallel.
+#define MULTITHREADING_THRESHOLD 6
 
 // This function uses the same algorithm as Java's String.hashCode method. This
 // implementation was stolen from OpenJDK.
@@ -74,10 +83,22 @@ bool generate_all_strings(const std::string& prefix, int hash_to_find, int k)
 		return compare_with_case_insensivity(string_to_test, hash_to_find);
 	}
 
-	for (char c = 'a'; c <= 'z'; c++) {
-		std::string new_prefix;
-		new_prefix = prefix + c;
-		found |= generate_all_strings(new_prefix, hash_to_find, k - 1);
+	if (k >= MULTITHREADING_THRESHOLD) {
+		// Create a vector containing the alphabet so I can use std::for_each
+		std::vector<char> alphabet;
+		for (char c = 'a'; c <= 'z'; c++) {
+			alphabet.push_back(c);
+		}
+
+		std::for_each(std::execution::par, alphabet.begin(), alphabet.end(), [&](char c) {
+			std::string new_prefix = prefix + c;
+			found |= generate_all_strings(new_prefix, hash_to_find, k - 1);
+		});
+	} else {
+		for (char c = 'a'; c <= 'z'; c++) {
+			std::string new_prefix = prefix + c;
+			found |= generate_all_strings(new_prefix, hash_to_find, k - 1);
+		}
 	}
 
 	return found;
