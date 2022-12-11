@@ -29,7 +29,7 @@ int compute_hash_code(const std::string& str)
 
 // This function checks if the hash matches for both the original string and the
 // same string with the first letter capitalized.
-bool compare_with_case_insensivity(std::string& str, int hash_to_find)
+bool compare_with_case_insensitivity(std::string& str, int hash_to_find)
 {
 	int hash_code = compute_hash_code(str);
 	if (hash_code == hash_to_find) {
@@ -62,7 +62,7 @@ bool find_from_dictionary(int hash_to_find)
 
 	std::string line;
 	while (std::getline(in_file, line)) {
-		found |= compare_with_case_insensivity(line, hash_to_find);
+		found |= compare_with_case_insensitivity(line, hash_to_find);
 	}
 
 	in_file.close();
@@ -80,7 +80,7 @@ bool generate_all_strings(const std::string& prefix, int hash_to_find, int k)
 		// Make a copy so the comparison function can safely modify the
 		// capitalization of the string.
 		std::string string_to_test = prefix;
-		return compare_with_case_insensivity(string_to_test, hash_to_find);
+		return compare_with_case_insensitivity(string_to_test, hash_to_find);
 	}
 
 	if (k >= MULTITHREADING_THRESHOLD) {
