@@ -19,9 +19,9 @@
 
 // This function uses the same algorithm as Java's String.hashCode method. This
 // implementation was stolen from OpenJDK.
-int compute_hash_code(const std::string& str)
+long compute_hash_code(const std::string& str)
 {
-	int result = 0;
+	long result = 0;
 	for (int i = 0; i < str.length(); i++)
 		result = 31 * result + str[i];
 	return result;
@@ -29,7 +29,7 @@ int compute_hash_code(const std::string& str)
 
 // This function checks if the hash matches for both the original string and the
 // same string with the first letter capitalized.
-bool compare_with_case_insensitivity(std::string& str, int hash_to_find)
+bool compare_with_case_insensitivity(std::string& str, long hash_to_find)
 {
 	int hash_code = compute_hash_code(str);
 	if (hash_code == hash_to_find) {
@@ -50,7 +50,7 @@ bool compare_with_case_insensitivity(std::string& str, int hash_to_find)
 	return false;
 }
 
-bool find_from_dictionary(int hash_to_find)
+bool find_from_dictionary(long hash_to_find)
 {
 	bool found = false;
 
@@ -69,7 +69,7 @@ bool find_from_dictionary(int hash_to_find)
 	return found;
 }
 
-bool generate_all_strings(const std::string& prefix, int hash_to_find, int k)
+bool generate_all_strings(const std::string& prefix, long hash_to_find, int k)
 {
 	bool found = false;
 	if (k == 0) {
@@ -106,7 +106,7 @@ bool generate_all_strings(const std::string& prefix, int hash_to_find, int k)
 
 // Generate every possible string using the lowercase alphabet with sizes up to
 // max_length and test each and every one to see if it matches the wanted value.
-bool find_from_generated_strings(int hash_to_find, int max_length)
+bool find_from_generated_strings(long hash_to_find, int max_length)
 {
 	bool found = false;
 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	int hash_to_find = std::atoi(argv[1]);
+	long hash_to_find = std::atol(argv[1]);
 	if (hash_to_find == 0) {
 		std::cerr << "The hash code you specified was invalid.\n";
 		return 1;
